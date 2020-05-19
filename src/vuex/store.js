@@ -15,14 +15,27 @@ export default new Vuex.Store({
       axios.defaults.headers.common['Authorization'] = `Bearer ${
         userData.token
       }`
-      console.log(axios.defaults.headers.common)
     }
   },
   actions: {
     register ({ commit }, credentials) {
-      return axios.post('//localhost:3000/register', credentials).then(({ data }) => {
-        commit('STORE_USER_DATA', data)
-      })
+      return axios
+        .post('//localhost:3000/register', credentials)
+        .then(({ data }) => {
+          commit('STORE_USER_DATA', data)
+        })
+    },
+    login ({ commit }, credentials) {
+      return axios
+        .post('//localhost:3000/login', credentials)
+        .then(({ data }) => {
+          commit('STORE_USER_DATA', data)
+        })
+    }
+  },
+  getters: {
+    loggedIn (state) {
+      return !!state.user
     }
   }
 })
