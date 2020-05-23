@@ -39,9 +39,17 @@ app.post('/register', (req, res) => {
 
     const data = JSON.stringify(user, null, 2)
     var dbUserEmail = require('./db/user.json').email
+    var errorToSend = []
 
     if (dbUserEmail === req.body.email) {
-      res.sendStatus(400)
+      errorToSend.push('An account with this email already exists.')
+    }
+    if (user.password.length < 5) {
+      errorToSend.push('Password too short.')
+    }
+
+    if (errorToSend.length) {
+      res.status(400).json({ errors: errorToSend })
     } else {
       fs.writeFile('./db/user.json', data, err => {
         if (err) {
@@ -78,7 +86,7 @@ app.post('/login', (req, res) => {
       name: userInfo.name
     })
   } else {
-    res.sendStatus(400)
+    res.status(401).json({ error: 'Invalid login. Please try again.' })
   }
 })
 
